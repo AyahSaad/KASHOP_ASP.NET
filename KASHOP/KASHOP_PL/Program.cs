@@ -1,5 +1,8 @@
 
+using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
+using KASHOP.DAL.Models;
+using KASHOP.DAL.Repository;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -46,20 +49,14 @@ namespace KASHOP_PL
 
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-          options.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnection")));
-
-
-
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnection")));
 
             builder.Services.AddSwaggerGen();
-
-
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-
-
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
