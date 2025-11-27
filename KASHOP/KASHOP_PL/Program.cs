@@ -3,17 +3,19 @@ using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
+using KASHOP.DAL.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace KASHOP_PL
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,11 @@ namespace KASHOP_PL
                 AddEntityFrameworkStores<ApplicationDbContext>().
                 AddDefaultTokenProviders();
 
+
+            builder.Services.AddScoped<ISeedData, RoleSeedData>();
+            builder.Services.AddScoped<ISeedData, UserSeedData>();
+
+
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
@@ -74,6 +81,16 @@ namespace KASHOP_PL
 
             app.UseAuthorization();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var srevices = scope.ServiceProvider;
+                var seeders = srevices.GetServices<ISeedData>();
+
+                foreach (var seeder in seeders)
+                {
+                    await seeder.DataSeed();
+                }
+            }
 
             app.MapControllers();
 
