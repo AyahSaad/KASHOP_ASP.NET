@@ -1,15 +1,14 @@
-﻿using Azure;
+﻿using KASHOP.BLL.Service;
 using KASHOP.DAL.DTO.Request;
 using KASHOP.PL.Resources;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using KASHOP.BLL.Service;
-using Microsoft.AspNetCore.Authorization;
 
-
-namespace KASHOP.PL.Controllers
+namespace KASHOP.PL.Areas.Admin
 {
-    [Route("api/[controller]")]
+    [Route("api/admin/[controller]")]
     [ApiController]
     [Authorize]
     public class CategoriesController : ControllerBase
@@ -17,24 +16,17 @@ namespace KASHOP.PL.Controllers
         private readonly IStringLocalizer<SharedResource> _localizer;
         private readonly ICategoryService _categoryService;
 
-        public CategoriesController(IStringLocalizer<SharedResource>localizer,ICategoryService categoryService)
+        public CategoriesController(IStringLocalizer<SharedResource> localizer, ICategoryService categoryService)
         {
             _localizer=localizer;
             _categoryService=categoryService;
-        }
-
-        [HttpGet("")]
-        public IActionResult index()
-        {
-            var response = _categoryService.GetAllCategories();
-            return Ok(new { message = _localizer["Success"].Value, response });
         }
 
 
         [HttpPost("")]
         public IActionResult Create(CategoryRequest request)
         {
-            var response= _categoryService.CreateCategory(request);
+            var response = _categoryService.CreateCategory(request);
             return Ok(new { message = _localizer["Success"].Value });
         }
     }
