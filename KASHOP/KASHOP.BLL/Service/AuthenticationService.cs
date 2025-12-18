@@ -23,12 +23,14 @@ namespace KASHOP.BLL.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager,IConfiguration configuration,IEmailSender emailSender)
+        public AuthenticationService(UserManager<ApplicationUser> userManager,IConfiguration configuration,IEmailSender emailSender,SignInManager<ApplicationUser> signInManager)
         {
             _userManager=userManager;
             _configuration=configuration;
             _emailSender=emailSender;
+            _signInManager=signInManager;
         }
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
         {
@@ -43,15 +45,46 @@ namespace KASHOP.BLL.Service
                         Message = "Invalid Email",
                     };
                 }
-                var result = await _userManager.CheckPasswordAsync(user,loginRequest.Password);
-                if (!result)
+
+                if (await _userManager.IsLockedOutAsync(user)) 
                 {
                     return new LoginResponse()
                     {
                         Success = false,
-                        Message = "Invalid Password",
+                        Message = "Account is locked, try again later!",
                     };
                 }
+
+
+                var res = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password,true);
+                if (res.IsLockedOut)
+                {
+                    return new LoginResponse()
+                    {
+                        Success = false,
+                        Message = "Account is locked duo to multiple attempts",
+                    };
+                }
+
+                else if (res.IsNotAllowed)
+                {
+                    return new LoginResponse()
+                    {
+                        Success = false,
+                        Message = "please confirm your email",
+                    };
+                }
+
+                if(!res.Succeeded)
+                {
+                    return new LoginResponse()
+                    {
+                        Success = false,
+                        Message = "invalid password",
+                    };
+                }
+
+            
                 return new LoginResponse()
                 {
                     Success = true,
