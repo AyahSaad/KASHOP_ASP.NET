@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace KASHOP.DAL.DTO.Response
 {
-    public class LoginResponse
+    public class LoginResponse : BaseResponse
     {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public List<string>? Errors { get; set; }
         public string? AccessToken { get; set; }
     }
 }
