@@ -6,6 +6,7 @@ using KASHOP.DAL.Repository;
 using KASHOP.DAL.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -118,6 +119,7 @@ namespace KASHOP_PL
 
             builder.Services.AddScoped<ISeedData, RoleSeedData>();
             builder.Services.AddScoped<ISeedData, UserSeedData>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 
             var app = builder.Build();
