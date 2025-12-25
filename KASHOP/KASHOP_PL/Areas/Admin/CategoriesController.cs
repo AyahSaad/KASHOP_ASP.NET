@@ -10,7 +10,7 @@ namespace KASHOP.PL.Areas.Admin
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles= "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly IStringLocalizer<SharedResource> _localizer;
@@ -21,7 +21,6 @@ namespace KASHOP.PL.Areas.Admin
             _localizer=localizer;
             _categoryService=categoryService;
         }
-
 
         [HttpPost("")]
         public IActionResult Create(CategoryRequest request)
