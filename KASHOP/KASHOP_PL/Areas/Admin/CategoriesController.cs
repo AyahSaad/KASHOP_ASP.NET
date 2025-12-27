@@ -45,6 +45,21 @@ namespace KASHOP.PL.Areas.Admin
             return Ok(result);
         }
 
+        [HttpPatch("toggle-status/{id}")]
+        public async Task<IActionResult> ToggleStatus([FromRoute] int id)
+        {
+            var result = await _categoryService.ToggleStatusAsync(id);
+            if (!result.Success)
+            {
+                if (result.Message.Contains("Not Found"))
+                {
+                    return NotFound(result);
+
+                }
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] int id)

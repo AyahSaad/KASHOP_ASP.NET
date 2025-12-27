@@ -8,7 +8,7 @@ namespace KASHOP.DAL.Models
 {
     public enum Status
     {
-       InActive=0,
-        Inactive=1
+       Active=0,
+        InActive = 1
     }
 }
