@@ -1,4 +1,5 @@
 
+using KASHOP.BLL.MapsterConfigurations;
 using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
@@ -128,6 +129,8 @@ namespace KASHOP_PL
 
             builder.Services.AddSwaggerGen();
             AppConfiguration.Config(builder.Services);
+            MapsterConfig.MapsterConfiRegister();
+           
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
