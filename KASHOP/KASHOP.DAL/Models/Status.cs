@@ -9,6 +9,6 @@ namespace KASHOP.DAL.Models
     public enum Status
     {
        Active=0,
-        InActive = 1
+       InActive = 1
     }
 }
