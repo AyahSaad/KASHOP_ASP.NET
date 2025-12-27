@@ -37,6 +37,26 @@ namespace KASHOP.DAL.Data
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var auditEntries = ChangeTracker.Entries<BaseModel>();
+            var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            foreach (var auditEntry in auditEntries)
+            {
+                if (auditEntry.State == EntityState.Added)
+                {
+                    auditEntry.Property(x => x.CreatedBy).CurrentValue= currentUserId;
+                    auditEntry.Property(x => x.CreatedAt).CurrentValue= DateTime.UtcNow;
+                }
+                if (auditEntry.State == EntityState.Modified)
+                {
+                    auditEntry.Property(x => x.UpdatedBy).CurrentValue= currentUserId;
+                    auditEntry.Property(x => x.UpdatedAt).CurrentValue= DateTime.UtcNow;
+                }
+
+            }
+            return base.SaveChangesAsync(cancellationToken);
+        }
 
         public override int SaveChanges()
         {

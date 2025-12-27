@@ -20,9 +20,9 @@ namespace KASHOP.PL.Areas.User
         }
 
         [HttpGet("")]
-        public IActionResult index()
+        public async Task<IActionResult> index()
         {
-            var response = _categoryService.GetAllCategories();
+            var response = await _categoryService.GetAllCategories();
             return Ok(new { message = _localizer["Success"].Value, response });
         }
 

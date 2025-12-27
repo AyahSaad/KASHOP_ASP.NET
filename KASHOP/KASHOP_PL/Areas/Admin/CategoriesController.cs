@@ -23,9 +23,9 @@ namespace KASHOP.PL.Areas.Admin
         }
 
         [HttpPost("")]
-        public IActionResult Create([FromBody] CategoryRequest request)
+        public async Task<IActionResult> Create([FromBody] CategoryRequest request)
         {
-            var response = _categoryService.CreateCategory(request);
+            var response = await _categoryService.CreateCategory(request);
             return Ok(new { message = _localizer["Success"].Value });
         }
 
