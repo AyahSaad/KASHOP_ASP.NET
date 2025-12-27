@@ -1,4 +1,6 @@
 ﻿using KASHOP.DAL.Data;
+using KASHOP.DAL.DTO.Request;
+using KASHOP.DAL.DTO.Response;
 using KASHOP.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,6 +30,17 @@ namespace KASHOP.DAL.Repository
         public List<Category> GetAll()
         {
             return _context.Categories.Include(c => c.Translations).ToList();
+        }
+
+        public async Task<Category?> FindByIdAsync(int id)
+        {
+            return await _context.Categories.Include(c => c.Translations).FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task DeleteAsync(Category category)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
         }
     }
 }

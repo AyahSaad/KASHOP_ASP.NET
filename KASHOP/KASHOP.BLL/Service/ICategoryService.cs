@@ -13,5 +13,6 @@ namespace KASHOP.BLL.Service
     {
         List<CategoryResponse> GetAllCategories();
         CategoryResponse CreateCategory(CategoryRequest Request);
+       Task<BaseResponse> DeleteCategoryAsync(int id);
     }
 }

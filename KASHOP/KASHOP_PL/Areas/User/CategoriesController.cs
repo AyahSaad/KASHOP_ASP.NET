@@ -26,6 +26,5 @@ namespace KASHOP.PL.Areas.User
             return Ok(new { message = _localizer["Success"].Value, response });
         }
 
-
     }
 }

@@ -28,5 +28,21 @@ namespace KASHOP.PL.Areas.Admin
             var response = _categoryService.CreateCategory(request);
             return Ok(new { message = _localizer["Success"].Value });
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] int id)
+        {
+            var result = await _categoryService.DeleteCategoryAsync(id);
+            if (!result.Success)
+            {
+                if (result.Message.Contains("Not Found"))
+                {
+                    return NotFound(result);
+
+                }
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
     }
 }
