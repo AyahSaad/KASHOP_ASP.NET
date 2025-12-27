@@ -26,15 +26,22 @@ namespace KASHOP.BLL.Service
             return category.Adapt<CategoryResponse>();
         }
 
-        public async Task<List<CategoryResponse>> GetAllCategories(string lang ="en")
+        public async Task<List<CategoryResponse>> GetAllCategoriesForAdmin()
         {
             var categories = await _categoryRepository.GetAllAsync();
-
-            foreach (var category in categories)
-            {
-                category.Translations = category.Translations.Where(t => t.Language == lang).ToList();
-            }
             var response = categories.Adapt<List<CategoryResponse>>();
+            return response;
+
+        }
+        public async Task<List<CategoryUserResponse>> GetAllCategoriesForUser(string lang ="en")
+        {
+            var categories = await _categoryRepository.GetAllAsync();
+            //var response = categories.Adapt<List<CategoryUserResponse>>();
+            var response = categories.Select(c => new CategoryUserResponse
+            {
+                Id = c.Id,
+                Name = c.Translations.Where(t => t.Language == lang).Select(t => t.Name).FirstOrDefault()
+            }).ToList();
             return response;
         }
 
