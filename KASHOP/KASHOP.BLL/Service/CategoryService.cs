@@ -34,6 +34,59 @@ namespace KASHOP.BLL.Service
             return response;
         }
 
+        public async Task<BaseResponse> UpdateCategoryAsync(int id,CategoryRequest request)
+        {
+            try
+            {
+                var category = await _categoryRepository.FindByIdAsync(id);
+                if (category is null)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "Category not found"
+                    };
+                }
+
+                if (request.Translations != null)
+                {
+                    foreach (var translation in request.Translations)
+                    {
+                        var existing = category.Translations.FirstOrDefault(t => t.Language == translation.Language);
+                        if (existing is not null)
+                        {
+                           existing.Name = translation.Name;
+                        }
+                        else
+                        {
+                            return new BaseResponse
+                            {
+                                Success = true,
+                                Message = $" Language {translation.Language} not supported"
+                            };
+                        }
+                    }
+                }
+                await _categoryRepository.UpdateAsync(category);
+                return new BaseResponse
+                {
+                    Success = true,
+                    Message = "Category Updated Successfully"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Can't Update Category",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+
         public async Task<BaseResponse> DeleteCategoryAsync(int id)
         {
             try

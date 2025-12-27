@@ -37,10 +37,18 @@ namespace KASHOP.DAL.Repository
             return await _context.Categories.Include(c => c.Translations).FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Category?> UpdateAsync(Category category)
+        {
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+            return category;
+        }
         public async Task DeleteAsync(Category category)
         {
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

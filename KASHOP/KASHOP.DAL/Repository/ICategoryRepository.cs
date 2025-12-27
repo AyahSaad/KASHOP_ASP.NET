@@ -14,5 +14,6 @@ namespace KASHOP.DAL.Repository
 
         Task<Category?> FindByIdAsync(int id);
         Task DeleteAsync(Category category);
+        Task<Category?> UpdateAsync(Category category);
     }
 }

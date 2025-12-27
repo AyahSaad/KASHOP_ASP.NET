@@ -23,11 +23,28 @@ namespace KASHOP.PL.Areas.Admin
         }
 
         [HttpPost("")]
-        public IActionResult Create(CategoryRequest request)
+        public IActionResult Create([FromBody] CategoryRequest request)
         {
             var response = _categoryService.CreateCategory(request);
             return Ok(new { message = _localizer["Success"].Value });
         }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] CategoryRequest request)
+        {
+            var result = await _categoryService.UpdateCategoryAsync(id,request);
+            if (!result.Success)
+            {
+                if (result.Message.Contains("Not Found"))
+                {
+                    return NotFound(result);
+
+                }
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] int id)
