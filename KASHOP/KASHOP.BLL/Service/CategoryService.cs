@@ -31,7 +31,6 @@ namespace KASHOP.BLL.Service
             var categories = await _categoryRepository.GetAllAsync();
             var response = categories.Adapt<List<CategoryResponse>>();
             return response;
-
         }
         public async Task<List<CategoryUserResponse>> GetAllCategoriesForUser(string lang ="en")
         {
@@ -43,7 +42,7 @@ namespace KASHOP.BLL.Service
                 Name = c.Translations.Where(t => t.Language == lang).Select(t => t.Name).FirstOrDefault()
             }).ToList();
             return response;
-        }
+        }   
 
         public async Task<BaseResponse> UpdateCategoryAsync(int id,CategoryRequest request)
         {
