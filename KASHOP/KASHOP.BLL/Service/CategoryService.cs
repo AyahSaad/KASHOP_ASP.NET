@@ -35,12 +35,7 @@ namespace KASHOP.BLL.Service
         public async Task<List<CategoryUserResponse>> GetAllCategoriesForUser(string lang ="en")
         {
             var categories = await _categoryRepository.GetAllAsync();
-            //var response = categories.Adapt<List<CategoryUserResponse>>();
-            var response = categories.Select(c => new CategoryUserResponse
-            {
-                Id = c.Id,
-                Name = c.Translations.Where(t => t.Language == lang).Select(t => t.Name).FirstOrDefault()
-            }).ToList();
+            var response = categories.BuildAdapter().AddParameters("lang",lang).AdaptToType<List<CategoryUserResponse>>();
             return response;
         }   
 

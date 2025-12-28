@@ -19,6 +19,11 @@ namespace KASHOP.BLL.MapsterConfigurations
             TypeAdapterConfig<Category, CategoryResponse>.NewConfig()
                 .Map(dest => dest.CreatedBy, source => source.User.UserName).TwoWays();
 
+            TypeAdapterConfig<Category, CategoryUserResponse>.NewConfig()
+              .Map(dest => dest.Name, source => source.Translations
+              .Where(t => t.Language == MapContext.Current.Parameters["lang"].ToString())
+              .Select(t => t.Name).FirstOrDefault());
+
         }
     }
 
