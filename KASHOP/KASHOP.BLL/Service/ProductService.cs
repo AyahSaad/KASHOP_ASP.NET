@@ -1,0 +1,54 @@
+﻿using KASHOP.DAL.DTO.Request;
+using KASHOP.DAL.DTO.Response;
+using KASHOP.DAL.Models;
+using KASHOP.DAL.Repository;
+using Mapster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KASHOP.BLL.Service
+{
+    public class ProductService : IProductService
+    {
+        private readonly IProductRepository _productRepository;
+        private readonly IFileService _fileService;
+
+        public ProductService(IProductRepository productRepository, IFileService fileService)
+        {
+            _productRepository=productRepository;
+            _fileService=fileService;
+        }
+
+        //Service ⇄ DTO
+        // Repository ⇄ Entity
+
+        /* 
+            Controller
+            ↓ inject
+            ProductService (IProductService)
+            ↓ inject
+            ProductRepository (IProductRepository)
+            ↓ inject
+            ApplicationDbContext
+            FileService (IFileService)
+         */
+        public async Task<ProductResponse> CreateProduct(ProductRequest request)
+        {
+            // Service (CreateProduct) Map DTO → Entity
+            var product = request.Adapt<Product>();
+            // Optional File Upload
+            if (request.MainImage != null)
+            {
+                var imagePath = await _fileService.UploadAsync(request.MainImage);
+                product.MainImage= imagePath; 
+            }
+            // Repository.AddAsync(Entity)
+            await _productRepository.AddAsync(product);
+            // Map Entity → Response DTO
+            return product.Adapt<ProductResponse>();
+        }
+    }
+}
