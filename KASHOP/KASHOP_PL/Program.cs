@@ -24,13 +24,10 @@ namespace KASHOP_PL
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireNonAlphanumeric = true;
@@ -96,8 +93,6 @@ namespace KASHOP_PL
     });
             });
 
-
-
             builder.Services.AddLocalization(options => options.ResourcesPath = "");
             const string defaultCulture = "en";
             var supportedCultures = new[]
@@ -119,14 +114,11 @@ namespace KASHOP_PL
 
             //        builder.Services.AddDbContext<ApplicationDbContext>(options =>
             //options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaulConnection"]));
-
             // builder.Services.AddDbContext<ApplicationDbContext>(options =>
             //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaulConnection"]));
 
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnection")));
-
             builder.Services.AddSwaggerGen();
             AppConfiguration.Config(builder.Services);
             MapsterConfig.MapsterConfiRegister();
@@ -142,8 +134,10 @@ namespace KASHOP_PL
                 app.UseSwaggerUI();
             }
 
+            // UseStaticFiles should be before routing
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             using (var scope = app.Services.CreateScope())
@@ -156,9 +150,7 @@ namespace KASHOP_PL
                     await seeder.DataSeed();
                 }
             }
-
             app.MapControllers();
-
             app.Run();
         }
     }

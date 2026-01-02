@@ -35,6 +35,14 @@ namespace KASHOP.BLL.Service
             ApplicationDbContext
             FileService (IFileService)
          */
+
+
+        public async Task<List<ProductResponse>> GetAllProductsForAdmin()
+        {
+            var products = await _productRepository.GetAllAsync();
+            var response = products.Adapt<List<ProductResponse>>();
+            return response;
+        }
         public async Task<ProductResponse> CreateProduct(ProductRequest request)
         {
             // Service (CreateProduct) Map DTO → Entity

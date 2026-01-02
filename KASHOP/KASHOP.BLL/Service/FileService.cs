@@ -14,7 +14,7 @@ namespace KASHOP.BLL.Service
             if (file != null && file.Length > 0) { 
             
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images",fileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","Images",fileName);
 
                 using (var stream = File.Create(filePath))
                 {

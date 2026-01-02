@@ -22,6 +22,12 @@ namespace KASHOP.PL.Areas.Admin
             _productService=productService;
         }
 
+        [HttpGet("")]
+        public async Task<IActionResult> index()
+        {
+            var response = await _productService.GetAllProductsForAdmin();
+            return Ok(new { message = _localizer["Success"].Value, response });
+        }
 
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] ProductRequest request)

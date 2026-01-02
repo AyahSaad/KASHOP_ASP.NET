@@ -1,5 +1,6 @@
 ﻿using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace KASHOP.DAL.Repository
         public ProductRepository(ApplicationDbContext context)
         {
             _context=context;
+        }
+
+        public async Task<List<Product>> GetAllAsync()
+        {
+            return await _context.Products.Include(c => c.Translations).Include(c => c.User).ToListAsync();
         }
 
         public async Task<Product> AddAsync(Product Request)
