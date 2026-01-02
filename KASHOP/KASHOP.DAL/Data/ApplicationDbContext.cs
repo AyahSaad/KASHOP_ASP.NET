@@ -19,7 +19,7 @@ namespace KASHOP.DAL.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
         public DbSet<Product> Products { get; set; }
-        // Note: new table for translation due to normalization in database 
+        // Note: new table for translation due to normalization in database cuz its multyvalue
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,IHttpContextAccessor httpContextAccessor)
             : base(options)
