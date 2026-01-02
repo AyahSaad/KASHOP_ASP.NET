@@ -21,6 +21,8 @@ namespace KASHOP.DAL.Data
         public DbSet<Product> Products { get; set; }
         // Note: new table for translation due to normalization in database cuz its multyvalue
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
+        // Note: new table for images due to normalization in database cuz its multyvalue
+        public DbSet<ProductImage> ProductImages { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,IHttpContextAccessor httpContextAccessor)
             : base(options)
         {

@@ -51,7 +51,20 @@ namespace KASHOP.BLL.Service
             if (request.MainImage != null)
             {
                 var imagePath = await _fileService.UploadAsync(request.MainImage);
-                product.MainImage= imagePath; 
+                product.MainImage = imagePath; 
+            }
+
+            //Sub Images 
+            if (request.SubImages != null)
+            {
+                product.SubImages = new List<ProductImage>();
+                foreach (var file in request.SubImages) { 
+                    var imagePath = await _fileService.UploadAsync(file);
+                    product.SubImages.Add(new ProductImage
+                    {
+                        ImageName = imagePath
+                    });
+                }
             }
             // Repository.AddAsync(Entity)
             await _productRepository.AddAsync(product);

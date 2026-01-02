@@ -16,6 +16,8 @@ namespace KASHOP.DAL.DTO.Response
         public Status Status { get; set; }
         public string CreatedBy { get; set; }
         public string MainImage { get; set; }
+        //public List<string> SubImages { get; set; }
+
         public List<ProductTranslationResponse> Translations { get; set; }
     }
 }
