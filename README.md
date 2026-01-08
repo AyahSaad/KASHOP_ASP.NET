@@ -22,7 +22,7 @@ This project is currently under development and serves as a learning and practic
 - **JWT (JSON Web Tokens)** – Authentication for secure API access.  
 - **Role-based & Claims-based Authorization** – Fine-grained access control.  
 - **SQL Server / LocalDB** – Database for storing application data.  
-- **Swagger** – API documentation and testing.   
+- **Swagger / Postman** – API documentation and testing.   
 
 ---
 
