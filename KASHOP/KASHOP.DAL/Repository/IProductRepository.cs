@@ -11,5 +11,6 @@ namespace KASHOP.DAL.Repository
     {
         Task<List<Product>> GetAllAsync();
         Task<Product> AddAsync(Product Request);
+        Task<Product?> FindByIdAsync(int id);
     }
 }

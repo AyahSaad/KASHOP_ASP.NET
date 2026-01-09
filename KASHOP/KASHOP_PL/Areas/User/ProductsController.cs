@@ -25,5 +25,12 @@ namespace KASHOP.PL.Areas.User
             var response = await _productService.GetAllProductsForUser(lang);
             return Ok(new { message = _localizer["Success"].Value, response });
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> index([FromRoute] int id,[FromQuery] string lang = "en")
+        {
+            var response = await _productService.GetAllProductsDetailsForUser(id,lang);
+            return Ok(new { message = _localizer["Success"].Value, response });
+        }
     }
 }

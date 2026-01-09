@@ -42,6 +42,13 @@ namespace KASHOP.BLL.Service
             var response = categories.BuildAdapter().AddParameters("lang", lang).AdaptToType<List<ProductUserResponse>>();
             return response;
         }
+
+        public async Task<ProductUserDetailsResponse> GetAllProductsDetailsForUser(int id,string lang = "en")
+        {
+            var product = await _productRepository.FindByIdAsync(id);
+            var response = product.BuildAdapter().AddParameters("lang", lang).AdaptToType<ProductUserDetailsResponse>();
+            return response;
+        }
         public async Task<List<ProductResponse>> GetAllProductsForAdmin()
         {
             var products = await _productRepository.GetAllAsync();

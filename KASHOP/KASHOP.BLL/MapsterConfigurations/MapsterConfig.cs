@@ -34,7 +34,15 @@ namespace KASHOP.BLL.MapsterConfigurations
               .Map(dest => dest.Name, source => source.Translations
               .Where(t => t.Language == MapContext.Current.Parameters["lang"].ToString())
               .Select(t => t.Name).FirstOrDefault());
-              
+
+            TypeAdapterConfig<Product, ProductUserDetailsResponse>.NewConfig()
+             .Map(dest => dest.MainImage, source => $"https://localhost:7292/Images/{source.MainImage}")
+             .Map(dest => dest.Name, source => source.Translations
+             .Where(t => t.Language == MapContext.Current.Parameters["lang"].ToString())
+             .Select(t => t.Name).FirstOrDefault())
+             .Map(dest => dest.Description, source => source.Translations
+             .Where(t => t.Language == MapContext.Current.Parameters["lang"].ToString())
+             .Select(t => t.Description).FirstOrDefault());
         }
     }
 
