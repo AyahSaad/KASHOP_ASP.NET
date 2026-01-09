@@ -27,6 +27,14 @@ namespace KASHOP.BLL.MapsterConfigurations
             // In the response: convert image name to link 
             TypeAdapterConfig<Product, ProductResponse>.NewConfig()
                 .Map(dest => dest.MainImage, source => $"https://localhost:7292/Images/{source.MainImage}");
+
+
+            TypeAdapterConfig<Product, ProductUserResponse>.NewConfig()
+              .Map(dest => dest.MainImage, source => $"https://localhost:7292/Images/{source.MainImage}")
+              .Map(dest => dest.Name, source => source.Translations
+              .Where(t => t.Language == MapContext.Current.Parameters["lang"].ToString())
+              .Select(t => t.Name).FirstOrDefault());
+              
         }
     }
 

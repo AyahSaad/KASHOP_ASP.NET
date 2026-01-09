@@ -36,7 +36,12 @@ namespace KASHOP.BLL.Service
             FileService (IFileService)
          */
 
-
+        public async Task<List<ProductUserResponse>> GetAllProductsForUser(string lang = "en")
+        {
+            var categories = await _productRepository.GetAllAsync();
+            var response = categories.BuildAdapter().AddParameters("lang", lang).AdaptToType<List<ProductUserResponse>>();
+            return response;
+        }
         public async Task<List<ProductResponse>> GetAllProductsForAdmin()
         {
             var products = await _productRepository.GetAllAsync();
