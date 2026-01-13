@@ -40,5 +40,14 @@ namespace KASHOP.PL.Areas.User
             var result = await _cartService.GetUserCartsAsync(userId);
             return Ok(result);
         }
+
+
+        [HttpDelete("")]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _cartService.ClearCartAsync(userId);
+            return Ok(result);
+        }
     }
 }

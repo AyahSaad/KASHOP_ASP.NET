@@ -47,5 +47,12 @@ namespace KASHOP.DAL.Repository
             return cart;
         }
 
+        public async Task ClearCartAsync(string userId)
+        {
+            var items = await _context.Carts.Where(c => c.UserId == userId).ToListAsync();
+            _context.Carts.RemoveRange(items); 
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

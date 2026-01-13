@@ -78,5 +78,15 @@ namespace KASHOP.BLL.Service
                 Items = items,
             };
         }
+
+        public async Task<BaseResponse> ClearCartAsync(string userId)
+        {
+            await _cartRepository.ClearCartAsync(userId);
+            return new BaseResponse()
+            {
+                Success = true,
+                Message ="cart cleared successfully"
+            };
+        }
     }
 }
