@@ -1,4 +1,5 @@
-﻿using KASHOP.BLL.Service;
+﻿using Azure.Core;
+using KASHOP.BLL.Service;
 using KASHOP.DAL.DTO.Request;
 using KASHOP.PL.Resources;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,14 @@ namespace KASHOP.PL.Areas.User
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _cartService.AddToCartAsync(userId, request);
+            return Ok(result);
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _cartService.GetUserCartsAsync(userId);
             return Ok(result);
         }
     }
