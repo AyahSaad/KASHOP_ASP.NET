@@ -33,5 +33,19 @@ namespace KASHOP.DAL.Repository
                 .ThenInclude(c => c.Translations)
                 .ToListAsync();
         }
+
+        public async Task<Cart?> GetCartItemAsync(string userId,int productId)
+        {
+            return await _context.Carts.Include(c => c.Product)
+               .FirstOrDefaultAsync(c => c.UserId==userId && c.ProductId == productId);
+        }
+
+        public async Task<Cart> UpdateAsync(Cart cart)
+        {
+             _context.Carts.Update(cart);
+            await _context.SaveChangesAsync();
+            return cart;
+        }
+
     }
 }

@@ -44,9 +44,17 @@ namespace KASHOP.BLL.Service
                 };
             }
 
-            var cart = request.Adapt<Cart>();
-            cart.UserId = userId;
-            await _cartRepository.CreateAsync(cart);
+            var cartItem = await _cartRepository.GetCartItemAsync(userId, request.ProductId);
+            if (cartItem is not null)
+            {
+                cartItem.Count+= request.Count;
+                await _cartRepository.UpdateAsync(cartItem);
+            } else
+            {
+                var cart = request.Adapt<Cart>();
+                cart.UserId = userId;
+                await _cartRepository.CreateAsync(cart);
+            }
             return new BaseResponse()
             {
                 Success= true,
