@@ -11,7 +11,7 @@ namespace KASHOP.PL.Areas.User
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "User")]
 
     public class CartsController : ControllerBase
     {
