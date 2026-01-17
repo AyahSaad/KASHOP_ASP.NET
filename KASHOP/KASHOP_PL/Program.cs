@@ -1,4 +1,5 @@
 
+using KASHOP.BLL;
 using KASHOP.BLL.MapsterConfigurations;
 using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +46,9 @@ namespace KASHOP_PL
             }).
            AddEntityFrameworkStores<ApplicationDbContext>().
            AddDefaultTokenProviders();
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             builder.Services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
