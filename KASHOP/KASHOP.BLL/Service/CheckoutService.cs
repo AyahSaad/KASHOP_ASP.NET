@@ -21,13 +21,16 @@ namespace KASHOP.BLL.Service
         private readonly IOrderRepository _orderRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IOrderItemRepository _orderItemRepository;
 
-        public CheckoutService(ICartRepository cartRepository , IOrderRepository orderRepository, UserManager<ApplicationUser> userManager,IEmailSender emailSender)
+        public CheckoutService(ICartRepository cartRepository , IOrderRepository orderRepository, UserManager<ApplicationUser> userManager,IEmailSender emailSender
+            ,IOrderItemRepository orderItemRepository)
         {
             _cartRepository=cartRepository;
             _orderRepository=orderRepository;
             _userManager=userManager;
             _emailSender=emailSender;
+            _orderItemRepository=orderItemRepository;
         }
         public async Task<CheckoutResponse> ProcessPaymentAsync(CheckoutRequest request, string userId)
         {
@@ -140,6 +143,23 @@ namespace KASHOP.BLL.Service
             order.OrderStatus = OrderStatusEnum.Approved;
             await _orderRepository.UpdateAsync(order);
             var user = await _userManager.FindByIdAsync(userId);
+
+            var cartItems = await _cartRepository.GetUserCartAsync(userId);
+            var orderItems = new List<OrderItem>();
+            foreach(var cartItem in  cartItems) 
+            {
+                var orderItem = new OrderItem
+                {
+                    OrderId = order.Id,
+                    ProductId = cartItem.ProductId,
+                    UnitPrice = cartItem.Product.Price,
+                    Quantity = cartItem.Count,
+                    TotalPrice = cartItem.Product.Price * cartItem.Count,
+                };
+                orderItems.Add(orderItem);
+            }
+            await _orderItemRepository.CreateRangeAsync(orderItems);
+            await _cartRepository.ClearCartAsync(userId);
             await _emailSender.SendEmailAsync(user.Email, "Payment successfully", "<h2> Thank you ... </h2>");
             return new CheckoutResponse
             {
