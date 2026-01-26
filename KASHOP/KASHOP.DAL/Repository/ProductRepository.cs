@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,6 +51,11 @@ namespace KASHOP.DAL.Repository
             }
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public IQueryable<Product> Query()
+        {
+            return _context.Products.Include(p => p.Translations).AsQueryable();
         }
     }
 }

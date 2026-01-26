@@ -3,6 +3,7 @@ using KASHOP.DAL.DTO.Response;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,10 +37,12 @@ namespace KASHOP.BLL.Service
             FileService (IFileService)
          */
 
-        public async Task<List<ProductUserResponse>> GetAllProductsForUser(string lang = "en")
+        public async Task<List<ProductUserResponse>> GetAllProductsForUser(string lang = "en", int page=1,int limit=3)
         {
-            var categories = await _productRepository.GetAllAsync();
-            var response = categories.BuildAdapter().AddParameters("lang", lang).AdaptToType<List<ProductUserResponse>>();
+            var query = _productRepository.Query();
+            var totalCount = await query.CountAsync();
+            query= query.Skip((page-1) * limit).Take(limit);
+            var response = query.BuildAdapter().AddParameters("lang", lang).AdaptToType<List<ProductUserResponse>>();
             return response;
         }
 
