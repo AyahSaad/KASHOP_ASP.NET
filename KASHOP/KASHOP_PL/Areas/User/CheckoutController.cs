@@ -43,14 +43,13 @@ namespace KASHOP.PL.Areas.User
         [AllowAnonymous]
         public async Task<IActionResult> Success([FromQuery] string session_id)
         {
-            var service = new SessionService();
-            var session = service.Get(session_id);
-            var userId = session.Metadata["UserId"];
-            return Ok(new
+            var response = await _checkoutService.HandleSuccessAsync(session_id);
+            if (!response.Success)
             {
-                Message = "Success",
-                UserId = userId
-            });
+
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
     }
 }

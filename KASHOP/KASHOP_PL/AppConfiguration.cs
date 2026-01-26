@@ -23,6 +23,7 @@ namespace KASHOP.PL
             Services.AddScoped<ICartRepository, CartRepository>();
             Services.AddScoped<ICartService, CartService>();
             Services.AddScoped<ICheckoutService, CheckoutService>();
+            Services.AddScoped<IOrderRepository, OrderRepository>();
         }
     }
 

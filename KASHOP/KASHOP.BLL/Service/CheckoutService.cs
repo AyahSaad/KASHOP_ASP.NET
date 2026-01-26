@@ -1,11 +1,15 @@
 ﻿using KASHOP.DAL.DTO.Request;
 using KASHOP.DAL.DTO.Response;
+using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
 using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,10 +18,16 @@ namespace KASHOP.BLL.Service
     public class CheckoutService : ICheckoutService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public CheckoutService(ICartRepository cartRepository)
+        public CheckoutService(ICartRepository cartRepository , IOrderRepository orderRepository, UserManager<ApplicationUser> userManager,IEmailSender emailSender)
         {
             _cartRepository=cartRepository;
+            _orderRepository=orderRepository;
+            _userManager=userManager;
+            _emailSender=emailSender;
         }
         public async Task<CheckoutResponse> ProcessPaymentAsync(CheckoutRequest request, string userId)
         {
@@ -32,6 +42,7 @@ namespace KASHOP.BLL.Service
             }
 
             decimal totalAmount = 0;
+
             foreach (var cartItem in cartItems)
             {
                 if (cartItem.Product.Quantity < cartItem.Count)
@@ -45,7 +56,15 @@ namespace KASHOP.BLL.Service
                 totalAmount += cartItem.Product.Price * cartItem.Count;
             }
 
-            if (request.PaymentMethod == "cash")
+            // object not requset
+            Order order = new Order
+            {
+                UserId = userId,
+                PaymentMethod = request.PaymentMethod,
+                AmountPaid = totalAmount,
+            };
+
+            if (request.PaymentMethod == PaymentMethodEnum.Cash)
             {
 
                 return new CheckoutResponse
@@ -55,7 +74,7 @@ namespace KASHOP.BLL.Service
                 };
             }
 
-            else if (request.PaymentMethod == "visa")
+            else if (request.PaymentMethod == PaymentMethodEnum.Visa)
             {
                 var options = new SessionCreateOptions
                 {
@@ -86,10 +105,14 @@ namespace KASHOP.BLL.Service
 
                     });
                 }
-                    var service = new SessionService();
-                    var session = service.Create(options);
+                
+                var service = new SessionService();
+                var session = service.Create(options);
+                order.SessionId = session.Id;
 
-                    return new CheckoutResponse
+                await _orderRepository.CreateAsync(order);
+
+                return new CheckoutResponse
                     {
                         Success = true,
                         Message = "payment session created",
@@ -105,6 +128,26 @@ namespace KASHOP.BLL.Service
                     };
                 }
             }
+       
+   
+        public async Task<CheckoutResponse> HandleSuccessAsync(string sessionId)
+        {
+            var service = new SessionService();
+            var session = service.Get(sessionId);
+            var userId = session.Metadata["UserId"];
+            var order = await _orderRepository.GetBySessionIdAsync(sessionId);
+            order.PaymentId = session.PaymentIntentId;
+            order.OrderStatus = OrderStatusEnum.Approved;
+            await _orderRepository.UpdateAsync(order);
+            var user = await _userManager.FindByIdAsync(userId);
+            await _emailSender.SendEmailAsync(user.Email, "Payment successfully", "<h2> Thank you ... </h2>");
+            return new CheckoutResponse
+            {
+                Success = true,
+                Message = "Payment completed successfully"
+            };
+
         }
+      }
     }
 

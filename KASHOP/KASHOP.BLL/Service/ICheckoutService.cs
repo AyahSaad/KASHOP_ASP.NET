@@ -11,5 +11,6 @@ namespace KASHOP.BLL.Service
     public interface ICheckoutService
     {
         Task<CheckoutResponse> ProcessPaymentAsync(CheckoutRequest request, string userId);
+        Task<CheckoutResponse> HandleSuccessAsync(string sessionId);
     }
 }
