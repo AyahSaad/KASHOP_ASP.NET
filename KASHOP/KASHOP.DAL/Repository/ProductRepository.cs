@@ -34,5 +34,22 @@ namespace KASHOP.DAL.Repository
             await _context.SaveChangesAsync();
             return Request;
         }
+
+        public async Task<bool> DecreaseQuantitiesAsync(List<(int productId, int quantity)> items)
+        {
+            var productIds = items.Select(p => p.productId).ToList();
+            var products = await _context.Products.Where(p =>productIds.Contains(p.Id)).ToListAsync();
+            foreach (var product in products)
+            {
+                var item= items.FirstOrDefault(p => p.productId == product.Id);
+                if(product.Quantity < item.quantity)
+                {
+                    return false;
+                }
+                product.Quantity -= item.quantity;
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
