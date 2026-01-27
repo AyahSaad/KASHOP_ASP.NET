@@ -7,6 +7,7 @@ using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using KASHOP.DAL.Utils;
 using KASHOP.PL;
+using KASHOP.PL.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -142,6 +143,7 @@ namespace KASHOP_PL
             }
 
             // UseStaticFiles should be before routing
+            app.UseMiddleware<CustomeMiddleware>();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseAuthentication();
