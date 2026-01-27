@@ -26,6 +26,9 @@ namespace KASHOP.PL
             Services.AddScoped<IOrderRepository, OrderRepository>();
             Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
+            Services.AddExceptionHandler<GlobalExceptionHandler>();
+            Services.AddProblemDetails();
+
         }
     }
 
