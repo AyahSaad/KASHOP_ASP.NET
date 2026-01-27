@@ -37,7 +37,7 @@ namespace KASHOP.BLL.Service
             FileService (IFileService)
          */
 
-        public async Task<List<ProductUserResponse>> GetAllProductsForUser(string lang = "en", int page=1,int limit=3, string? search = null)
+        public async Task<PaginatedResponse<ProductUserResponse>> GetAllProductsForUser(string lang = "en", int page=1,int limit=3, string? search = null)
         {
             var query = _productRepository.Query();
             if(search is not null)
@@ -47,7 +47,13 @@ namespace KASHOP.BLL.Service
             var totalCount = await query.CountAsync();
             query= query.Skip((page-1) * limit).Take(limit);
             var response = query.BuildAdapter().AddParameters("lang", lang).AdaptToType<List<ProductUserResponse>>();
-            return response;
+            return new PaginatedResponse<ProductUserResponse>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                Limit = limit,
+                Data = response
+            };
         }
 
         public async Task<ProductUserDetailsResponse> GetAllProductsDetailsForUser(int id,string lang = "en")
