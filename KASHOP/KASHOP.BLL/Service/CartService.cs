@@ -26,6 +26,10 @@ namespace KASHOP.BLL.Service
         public async Task<BaseResponse> AddToCartAsync(string userId, AddToCartRequest request)
         {
             var product = await _productRepository.FindByIdAsync(request.ProductId);
+            var cartItem = await _cartRepository.GetCartItemAsync(userId, request.ProductId);
+            var existingCount = cartItem?.Count ?? 0;
+
+
             if (product is null)
             {
                 return new BaseResponse()
@@ -34,8 +38,8 @@ namespace KASHOP.BLL.Service
                     Message = "product not found"
                 };
             }
-
-            if (product.Quantity < request.Count)
+            
+            if (product.Quantity < (existingCount + request.Count))
             {
                 return new BaseResponse()
                 {
@@ -44,7 +48,6 @@ namespace KASHOP.BLL.Service
                 };
             }
 
-            var cartItem = await _cartRepository.GetCartItemAsync(userId, request.ProductId);
             if (cartItem is not null)
             {
                 cartItem.Count+= request.Count;
@@ -86,6 +89,72 @@ namespace KASHOP.BLL.Service
             {
                 Success = true,
                 Message ="cart cleared successfully"
+            };
+        }
+
+        public async Task<BaseResponse> RemoveFromCartAsync(string userId, int productId)
+        {
+            var cartItem = await _cartRepository.GetCartItemAsync(userId, productId);
+            if (cartItem is null)
+            {
+                return new BaseResponse()
+                {
+                    Success = false,
+                    Message ="cart item not found"
+                };
+            }
+            await _cartRepository.RemoveFromCartAsync(cartItem);
+            return new BaseResponse()
+            {
+                Success = true,
+                Message ="cart item removed successfully"
+            };
+        }
+
+        public async Task<BaseResponse> UpdatQuantityAsync(string userId, int productId,int count)
+        {
+            var cartItem = await _cartRepository.GetCartItemAsync(userId,productId);
+            var product = await _productRepository.FindByIdAsync(productId);
+            if (cartItem is null)
+            {
+                return new BaseResponse()
+                {
+                    Success = false,
+                    Message ="cart item is not found"
+                };
+            }
+
+            if (count < 0)
+            {
+                return new BaseResponse()
+                {
+                    Success = false,
+                    Message ="invalid count"
+                };
+            }
+            if (count == 0)
+            {
+                await _cartRepository.RemoveFromCartAsync(cartItem);
+                return new BaseResponse()
+                {
+                    Success = true,
+                    Message ="item removed successfully"
+                };
+            }
+            if (product.Quantity < count)
+            {
+                return new BaseResponse()
+                {
+                    Success = false,
+                    Message ="out of stock"
+                };
+            }
+            cartItem.Count = count;
+            await _cartRepository.UpdateAsync(cartItem);
+            return new BaseResponse()
+            {
+                Success = true,
+                Message ="cart item quantity updated successfully"
             };
         }
     }

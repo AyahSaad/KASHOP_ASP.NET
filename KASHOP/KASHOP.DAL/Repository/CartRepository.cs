@@ -54,5 +54,12 @@ namespace KASHOP.DAL.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task RemoveFromCartAsync(Cart cart)
+        {
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
+
+        }
+
     }
 }
