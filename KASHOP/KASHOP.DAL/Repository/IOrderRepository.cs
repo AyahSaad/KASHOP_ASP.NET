@@ -1,4 +1,5 @@
-﻿using KASHOP.DAL.Models;
+﻿using KASHOP.DAL.DTO.Response;
+using KASHOP.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace KASHOP.DAL.Repository
         Task<Order> CreateAsync(Order Request);
         Task<Order> GetBySessionIdAsync(string SessionId);
         Task<Order> UpdateAsync(Order order);
+        Task<Order?> GetOrderByIdAsync(int orderId);
+        Task<List<Order>> GetOrdersByStatusAsync(OrderStatusEnum status);
     }
 }

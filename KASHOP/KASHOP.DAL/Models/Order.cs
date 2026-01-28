@@ -19,6 +19,11 @@ namespace KASHOP.DAL.Models
     {
         Cash=1, Visa=2
     }
+
+    public enum PaymentStatusEnum
+    {
+        UnPaid = 1, Paid = 2
+    }
     public class Order
     {
         public int Id { get; set; }
@@ -29,6 +34,7 @@ namespace KASHOP.DAL.Models
         public string? PaymentId { get; set; } 
         public decimal? AmountPaid {  get; set; } 
         public PaymentMethodEnum PaymentMethod { get; set; }
+        public PaymentStatusEnum? paymentStatus { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public List<OrderItem> OrderItems { get; set; }

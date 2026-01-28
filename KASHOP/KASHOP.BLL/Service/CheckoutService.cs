@@ -67,6 +67,7 @@ namespace KASHOP.BLL.Service
                 UserId = userId,
                 PaymentMethod = request.PaymentMethod,
                 AmountPaid = totalAmount,
+                paymentStatus = PaymentStatusEnum.UnPaid
             };
 
             if (request.PaymentMethod == PaymentMethodEnum.Cash)
@@ -114,6 +115,7 @@ namespace KASHOP.BLL.Service
                 var service = new SessionService();
                 var session = service.Create(options);
                 order.SessionId = session.Id;
+                order.paymentStatus = PaymentStatusEnum.Paid;
 
                 await _orderRepository.CreateAsync(order);
 
