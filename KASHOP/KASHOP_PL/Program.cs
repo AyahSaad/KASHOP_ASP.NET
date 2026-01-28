@@ -143,7 +143,7 @@ namespace KASHOP_PL
             }
 
             // UseStaticFiles should be before routing
-            // app.UseMiddleware<GlobalExceptionHandling>();
+             //app.UseMiddleware<GlobalExceptionHandling>();
             app.UseExceptionHandler();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
