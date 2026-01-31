@@ -31,6 +31,7 @@ namespace KASHOP.BLL.Service
            return orders.Adapt<List<OrderResponse>>();
         }
 
+        // edit  payment status
         public async Task<BaseResponse> UpdatOrderStatusAsync(int orderId, OrderStatusEnum newStatus)
         {
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
