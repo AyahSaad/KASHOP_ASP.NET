@@ -26,7 +26,11 @@ namespace KASHOP.DAL.Repository
 
         public async Task<Product?> FindByIdAsync(int id)
         {
-            return await _context.Products.Include(c => c.Translations).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Products.Include(c => c.Translations)
+                .Include(c => c.SubImages)
+                .Include(c => c.Reviews)
+                .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Product> AddAsync(Product Request)
