@@ -27,7 +27,18 @@ namespace KASHOP_PL
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var MyAllowSpecificOrigins = "_myAllowOrigins";
             // Add services to the container.
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin()
+                                      .AllowAnyMethod().AllowAnyHeader();
+                                  });
+            });
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -143,7 +154,8 @@ namespace KASHOP_PL
             }
 
             // UseStaticFiles should be before routing
-             //app.UseMiddleware<GlobalExceptionHandling>();
+            //app.UseMiddleware<GlobalExceptionHandling>();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseExceptionHandler();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
